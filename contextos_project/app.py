@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / 'data'
 UPLOAD_DIR = Path('/tmp/uploads')
 DATA_DIR.mkdir(exist_ok=True)
-UPLOAD_DIR.mkdir(parents=True,exists_ok=True)
+UPLOAD_DIR.mkdir(parents=True,exist_ok=True)
 MEMORY_FILE = DATA_DIR / 'memories.json'
 ALLOWED_EXTENSIONS = {'.zip', '.json'}
 
