@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ContextOS · Personal AI Context</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="top"><div class="brand-mark">C</div><div><h1>ContextOS</h1><p>Your information, ready to reuse across AI tools.</p></div><span class="local-pill">LOCAL APP</span></header>
+<main>
+  <section class="hero"><p class="eyebrow">PERSONAL AI CONTEXT MANAGER</p><h2>Tell your story once.<br><span>Reuse it when you need it.</span></h2><p class="sub">Import your ChatGPT export, review useful memory suggestions, and create a context pack you can share with another AI.</p></section>
+  {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="alerts">{% for category, message in messages %}<div class="alert {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+  <div class="grid">
+    <section class="panel"><div class="panel-heading"><div class="step">01</div><div><h3>Import ChatGPT history</h3><p>Use your official data export.</p></div></div>
+      <ol class="steps"><li>In ChatGPT, open <b>Settings → Data Controls → Export Data</b>.</li><li>Download the ZIP from the email and keep it private.</li><li>Choose that ZIP below. ContextOS reads user messages and suggests facts for you to review.</li></ol>
+      <form action="{{ url_for('import_chatgpt') }}" method="post" enctype="multipart/form-data" class="form-stack"><label class="file-picker"> <span>Choose ZIP or conversations.json</span><input type="file" name="chat_file" accept=".zip,.json" required></label><button class="btn primary" type="submit">Import and find suggestions</button></form>
+      <p class="hint">This starter version processes the file on your laptop. It does not connect to ChatGPT or Gemini accounts.</p>
+    </section>
+    <section class="panel"><div class="panel-heading"><div class="step">02</div><div><h3>Add a memory manually</h3><p>Save a fact or preference you want to reuse.</p></div></div>
+      <form action="{{ url_for('add_memory') }}" method="post" class="form-stack"><label>Category<select name="category"><option>About me</option><option>Education</option><option>Learning preference</option><option>Programming</option><option>Project</option><option>General</option></select></label><label>Memory<textarea name="fact" rows="4" required placeholder="Example: I am a BTech Data Science student learning Python. Explain topics from the basics in simple words."></textarea></label><button class="btn primary" type="submit">Save memory</button></form>
+    </section>
+    <section class="panel wide"><div class="panel-heading"><div class="step">03</div><div><h3>Your saved memories <span class="count">{{ total }}</span></h3><p>Review these before sharing them with another AI.</p></div></div>
+      {% if memories %}<div class="memory-list">{% for memory in memories %}<article class="memory"><div><span class="tag">{{ memory.category }}</span><p>{{ memory.fact }}</p></div><form action="{{ url_for('delete_memory', memory_id=memory.id) }}" method="post" onsubmit="return confirm('Delete this memory?')"><button class="icon-btn" title="Delete memory" aria-label="Delete memory">×</button></form></article>{% endfor %}</div>
+      <a class="btn primary link-btn" href="{{ url_for('export_pack') }}">Download context pack (.txt)</a>
+      {% else %}<div class="empty"><div class="empty-icon">✦</div><b>Nothing stored yet</b><p>Add a memory or import your ChatGPT export to get started.</p></div>{% endif %}
+    </section>
+    <section class="panel wide note-panel"><div class="note-icon">i</div><div><h3>What “automatic transfer” means</h3><p>This app can import an export file and prepare a reusable context pack. It <b>cannot automatically read your ChatGPT account or continuously sync new chats to Gemini</b>. That would require supported, authorized integrations from both services. For now, you review the suggestions, download the pack, and provide it to Gemini yourself.</p><p>Only import data you are comfortable processing locally, and review/remove sensitive details before sharing.</p></div></section>
+  </div>
+  <footer>ContextOS · Local prototype · Your data is stored in this project’s <code>data</code> folder.</footer>
+</main></body></html>
